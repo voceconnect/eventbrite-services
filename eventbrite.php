@@ -5,7 +5,7 @@ Plugin URI: http://vocecommunications.com/
 Description: Provides Eventbrite service, widgets, and features to supporting themes.
 Author: Voce Communications
 Author URI: http://vocecommunications.com/
-Version: 0.1
+Version: 1.0
 License: GNU General Public License v2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 */
