@@ -9,7 +9,7 @@ License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
 == Description ==
-Collection of plugins and settings to provide a connection to Eventbrite. Adds the Eventbrite service, widgets and features to supporting themes, namely the `Eventbrite Venue` and `Eventbrite Event themes`.
+Collection of plugins and settings to provide a connection to Eventbrite. Adds the Eventbrite service to your theme, additional widgets and features are only enabled in supported themes, namely the `Eventbrite Venue` and `Eventbrite Event` themes.
 
 Please refer to full documentation at https://github.com/voceconnect/eventbrite-services/wiki.
 
