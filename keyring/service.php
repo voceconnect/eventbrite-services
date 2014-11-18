@@ -312,9 +312,15 @@ abstract class Keyring_Service {
 
 // Load all packaged services in the ./includes/services/ directory by including all PHP files, first in core, then in extended
 // Remove a Service (prevent it from loading at all) by filtering on 'keyring_services'
-$keyring_services = glob( dirname( __FILE__ ) . "/includes/services/core/*.php" );
-$keyring_services = array_merge( $keyring_services, glob( dirname( __FILE__ ) . "/includes/services/extended/*.php" ) );
+$core_services = glob( dirname( __FILE__ ) . '/includes/services/core/*.php' );
+$core_services = is_array( $core_services ) ? $core_services : array();
+
+$extended_services = glob( dirname( __FILE__ ) . '/includes/services/extended/*.php' );
+$extended_services = is_array( $extended_services ) ? $extended_services : array();
+
+$keyring_services = array_merge( $core_services, $extended_services );
 $keyring_services = apply_filters( 'keyring_services', $keyring_services );
+
 foreach ( $keyring_services as $keyring_service )
 	require $keyring_service;
 unset( $keyring_services, $keyring_service );
