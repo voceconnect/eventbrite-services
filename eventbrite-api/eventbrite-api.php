@@ -26,7 +26,21 @@ class Voce_Eventbrite_API {
 	 * Sets up the actions used in the admin
 	 */
 	static function admin_init() {
-		add_action( 'keyring_connection_deleted', array(__CLASS__, 'flush_api_caches'));
+		add_action( 'keyring_connection_deleted', array( __CLASS__, 'flush_api_caches') );
+		add_filter( 'keyring_eventbrite_request_token_params', array( __CLASS__, 'add_connection_referrer' ));
+	}
+
+	/**
+	* Append a referrer to the OAuth request made to Eventbrite, giving them an idea of WordPress adoption.
+	*
+	* @param array $params Parameters to be passed on an OAuth request.
+	* @return array OAuth request parameters with the referral added.
+	*/
+	public static function add_connection_referrer( $params ) {
+		if ( !isset( $params['ref'] ) ) {
+			$params['ref'] = 'wpoauth';
+		}
+		return $params;
 	}
 
 	public static function flush_api_caches( $service ) {
