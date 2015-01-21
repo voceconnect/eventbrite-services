@@ -188,12 +188,13 @@ class Voce_Eventbrite_API {
 	 * count              - int - number of items to return
 	 * per_page           - int - number of items to have on a page
 	 * page               - int - current page number
-	 * order_by            - string - ordering of the results ( default: start_asc; other values: start_desc, created_asc, created_desc )
+	 * order_by           - string - ordering of the results ( default: start_asc; other values: start_desc, created_asc, created_desc )
 	 * include            - array - only return the specified event ids
 	 * exclude            - array - do not return the specifed event ids
 	 * organizer          - string - only return results from the specified organizer id
 	 * venue              - string - only return results from the specified venue id
-	 * search            - string - term to search for in event titles
+	 * search             - string - term to search for in event titles
+	 * only_public        - boolean - not set by default - overrides global setting set in admin - flag to only show public events in the results
 	 *
 	 * @param array $params function and api method parameters
 	 * @param boolean $force force a renewal of the cache
@@ -201,15 +202,15 @@ class Voce_Eventbrite_API {
 	 */
 	public static function get_user_events( $params = array(), $force = false ) {
 		$defaults = array(
-			'count'               => -1,
-			'per_page'            => 10,
-			'page'                => -1,
-			'order_by'             => '',
-			'include'             => array(),    // include events by id
-			'exclude'             => array(),
-			'organizer'           => '',
-			'venue'               => '',
-			'search'              => '',
+			'count'       => -1,
+			'per_page'    => 10,
+			'page'        => -1,
+			'order_by'    => '',
+			'include'     => array(),    // include events by id
+			'exclude'     => array(),
+			'organizer'   => '',
+			'venue'       => '',
+			'search'      => ''
 		);
 		$params = wp_parse_args( $params , $defaults );
 		extract( $params );
@@ -253,6 +254,12 @@ class Voce_Eventbrite_API {
 
 			if ( $organizer && $organizer !== 'all' ) {
 				$events = array_filter( $events, array( new User_Events_Filter($params), 'filter_organizer' ) );
+			}
+
+			// only display public events if specified via admin or parameter
+			$only_public = isset( $params['only_public'] ) ? (bool) $params['only_public'] : Voce_Settings_API::GetInstance()->get_setting( 'only-public-events', Eventbrite_Settings::eventbrite_group_key() );
+			if ( $only_public ) {
+				$events = array_filter( $events, array( new User_Events_Filter( array( 'listed' => true ) ), 'filter_private' ) );
 			}
 
 			// allow the event titles to be searched
@@ -531,5 +538,12 @@ class User_Events_Filter {
 		return current_time( 'timestamp' ) <= strtotime( $event->end->local );
 	}
 
+	function filter_private( $event ) {
+		if ( isset( $event->listed ) ) {
+			return $event->listed == $this->args['listed'];
+		} else {
+			return false;
+		}
+	}
 }
 }

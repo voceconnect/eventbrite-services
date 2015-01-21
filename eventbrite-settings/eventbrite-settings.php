@@ -56,6 +56,12 @@ class Eventbrite_Settings {
 					'display_callback'   => array( __CLASS__, 'cta_text_selection_display_cb' ),
 					'sanitize_callbacks' => array( array( __CLASS__, 'cta_text_selection_sanitize_cb' ) ),
 					'options'            => array( __( 'Register', 'eventbrite-parent' ), __( 'Buy Tickets', 'eventbrite-parent' ) )
+				))->group
+				->add_setting( __( 'Only Display Public Events', 'eventbrite-parent' ), 'only-public-events', array(
+					'description'        => __( 'Only allow public events to be displayed throughout the site.', 'eventbrite-parent' ),
+					'default_value'      => false,
+					'display_callback'   => array( __CLASS__, 'only_public_events_display_cb'),
+					'sanitize_callbacks' => array( array( __CLASS__, 'only_public_events_sanitize_cb' ) )
 				));
 		}
 
@@ -437,6 +443,25 @@ class Eventbrite_Settings {
 			return $value;
 
 		return false;
+	}
+
+	/**
+	 * Output "Only Public Events" checkbox
+	 */
+	static function only_public_events_display_cb( $value, $setting, $args ) {
+		$value = in_array($value, array('on', true), true);
+		?>
+		<input type="checkbox" id="<?php echo esc_attr( $setting->get_field_id() ); ?>" name="<?php echo esc_attr( $setting->get_field_name() ) ?>" <?php checked( $value ) ?> />
+		<?php if(!empty($args['description'])) : ?>
+			<br/><span class="description"><?php echo wp_kses_post( $args['description'] ); ?></span>
+		<?php endif;
+	}
+
+	/**
+	 * Sanitize and validate public events setting on save
+	 */
+	static function only_public_events_sanitize_cb( $value, $setting, $args ) {
+		return !is_null( $value );
 	}
 }
 add_action( 'init', array( 'Eventbrite_Settings', 'init' ) );
