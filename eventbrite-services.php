@@ -42,13 +42,13 @@ function eventbrite_setup_admin_notice() {
 	if ( class_exists( 'Voce_Eventbrite_API' ) && ! Voce_Eventbrite_API::get_auth_service() ) {
 		$eventbrite_service = Voce_Eventbrite_API::get_service();
 		// if on the eventbrite settings page check if keyring service is configured
-		if ( is_a( $eventbrite_service, 'Keyring_Service_Eventbrite' ) && 'tools_page_eventbrite-page' === get_current_screen()->id && ( empty( $eventbrite_service->consumer->key ) || empty( $eventbrite_service->consumer->secret ) ) ) {
+		if ( is_a( $eventbrite_service, 'Keyring_Service_Eventbrite' ) && 'tools_page_eventbrite-page' === get_current_screen()->id && ( empty( $eventbrite_service->key ) || empty( $eventbrite_service->secret ) ) ) {
 			printf( '<div class="error"><p>%s</p></div>',
 				sprintf( __( 'Before attempting to "Connect with Eventbrite", you will need to create an Eventbrite API token and configure Keyring under %s.', 'eventbrite' ),
 					'<a href="' . admin_url( 'tools.php?page=keyring&action=services' ) . '">' . __( 'Tools &rarr; Keyring &rarr; New Connection', 'eventbrite' ) . '</a>'
 				)
 			);
-		} else {
+		} elseif ( 'tools_page_eventbrite-page' !== get_current_screen()->id ) {
 			printf( '<div class="updated"><p>%s</p></div>',
 				sprintf( __( 'You can set up Eventbrite Services under %s.', 'eventbrite' ),
 					'<a href="' . admin_url( 'tools.php?page=eventbrite-page' ) . '">' . __( 'Tools &rarr; Eventbrite', 'eventbrite' ) . '</a>'
