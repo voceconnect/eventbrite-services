@@ -298,6 +298,17 @@ class Voce_Eventbrite_API {
 				}
 			}
 
+			// populate default event properties
+			$events = array_map( function( $event ) {
+				if ( !isset( $event->description ) ) {
+					$event->description = new stdClass();
+					$event->description->text = '';
+					$event->description->html = '';
+				}
+
+				return $event;
+			}, $events );
+
 			return $events;
 		}
 		return array();
