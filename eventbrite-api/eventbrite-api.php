@@ -136,7 +136,7 @@ class Voce_Eventbrite_API {
 	 * @throws Exception exception when service is not available or an error occurs when submitting the request
 	 */
 	public static function make_request( $method, $params ) {
-		$url = self::ENDPOINT . $method;
+		$url = trailingslashit( self::ENDPOINT . $method );
 		$eb  = self::get_auth_service();
 
 		if ( !$eb )
